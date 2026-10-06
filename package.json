@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "tsc watch src/Index.ts"
+    "build": "tsc",
+    "start": "node dist/Index.js"
   },
   "keywords": [],
   "author": "",
