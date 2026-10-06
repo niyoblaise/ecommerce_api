@@ -1,0 +1,117 @@
+import express from "express";
+import PaymentController from "../Controller/PaymentController.js";
+import {authenticate} from "../middleware/authMiddleware.js";
+
+
+const router = express.Router();
+
+router.use(authenticate)
+/**
+ * @swagger
+ * tags:
+ *   name: Payments
+ *   description: Payment records and payment status
+ */
+
+/**
+ * @swagger
+ * /api/payments/order/{orderId}:
+ *   post:
+ *     summary: Create a payment record for an order
+ *     tags: [Payments]
+ *     parameters:
+ *       - in: path
+ *         name: orderId
+ *         required: true
+ *         schema:
+ *           type: string
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required: [method]
+ *             properties:
+ *               method:
+ *                 type: string
+ *                 enum: [MOMO, CARD, BANK_TRANSFER]
+ *                 example: MOMO
+ *     responses:
+ *       201:
+ *         description: Payment record created
+ *       400:
+ *         description: Invalid method or existing payment
+ *       404:
+ *         description: Order not found
+ *   get:
+ *     summary: Get payment for an order
+ *     tags: [Payments]
+ *     parameters:
+ *       - in: path
+ *         name: orderId
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Payment retrieved
+ *       404:
+ *         description: Payment not found
+ */
+router.post("/order/:orderId", PaymentController.createPayment);
+router.get("/order/:orderId", PaymentController.getOrderPayment);
+
+/**
+ * @swagger
+ * /api/payments:
+ *   get:
+ *     summary: Get all payments
+ *     tags: [Payments]
+ *     responses:
+ *       200:
+ *         description: Payments retrieved
+ */
+router.get("/", PaymentController.getAllPayments);
+
+/**
+ * @swagger
+ * /api/payments/{id}:
+ *   get:
+ *     summary: Get a payment by ID
+ *     tags: [Payments]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Payment retrieved
+ *       404:
+ *         description: Payment not found
+ */
+router.get("/:id", PaymentController.getPayment);
+
+/**
+ * @swagger
+ * /api/payments/customer/{id}:
+ *   get:
+ *     summary: Get a payment by customer id
+ *     tags: [Payments]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Payment retrieved
+ *       404:
+ *         description: Payment not found
+ */
+router.get("/customer/:id",PaymentController.getCustomerPayments)
+
+export default router;
