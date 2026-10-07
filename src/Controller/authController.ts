@@ -59,7 +59,7 @@ export const loginUser = async (req: Request, res: Response) => {
             process.env.JWT_SECRET as string,
             {expiresIn:"1d"})
 
-        await sendWelcomeBrevo(email,user.name as string)
+        await sendWelcomeBrevo(email)
         return  res.status(200).json({message:"Login successful",token:token});
 
     }catch (e){
@@ -185,12 +185,12 @@ export const resetPassword = async (
 
 
 
-export const sendWelcomeBrevo = async (email:string,user:String) =>{
+export const sendWelcomeBrevo = async (email:string) =>{
     await sendBrevoMail(email,"Welcome to our API",
         `
             <h2>Welcome</h2>
 
-            <p>You are most welcome to our API ${user}</p>
+            <p>You are most welcome to our API ${email}</p>
         `)
 }
 
