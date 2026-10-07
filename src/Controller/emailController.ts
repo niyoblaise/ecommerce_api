@@ -33,3 +33,5 @@ export const sendWelcome = async (to:string)=>{
     const subject = "test "
     await sendEmail(to,subject,html)
 }
+
+

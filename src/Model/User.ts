@@ -1,8 +1,11 @@
 import mongoose, {Document, Schema} from "mongoose";
 export interface IUser extends Document{
-    name: String,
-    email: String,
+    name: string,
+    email: string,
     password: string,
+    role:"Customer" | "Seller" | "Admin",
+    resetCode?: string;
+    resetCodeExpires?: Date;
 }
 
 const userSchema = new Schema<IUser>({
@@ -22,6 +25,19 @@ const userSchema = new Schema<IUser>({
         type: String,
         required: true,
     },
+    role:{
+        type:String,
+        enum:["Customer","Seller","Admin"],
+        required: true,
+        default:"Customer"
+    },
+    resetCode: {
+        type: String
+    },
+
+    resetCodeExpires: {
+        type: Date
+    }
 
 },{
     timestamps: true
