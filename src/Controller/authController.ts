@@ -25,7 +25,6 @@ export const registerUser = async (req: Request, res: Response) => {
             password:hashedPassword
         })
 
-        await sendWelcome(email)
 
         return res.status(201).json({message: "User created",user:{
             name,email
@@ -60,7 +59,7 @@ export const loginUser = async (req: Request, res: Response) => {
             process.env.JWT_SECRET as string,
             {expiresIn:"1d"})
 
-        await sendWelcome(email)
+        await sendWelcomeBrevo(email)
         return  res.status(200).json({message:"Login successful",token:token});
 
     }catch (e){
@@ -186,7 +185,14 @@ export const resetPassword = async (
 
 
 
+export const sendWelcomeBrevo = async (email:string) =>{
+    await sendBrevoMail(email,"Welcome to our API",
+        `
+            <h2>Welcome</h2>
 
+            <p>You are most welcome to our API ${email}</p>
+        `)
+}
 
 export const sendResetCode = async (
     email: string,
