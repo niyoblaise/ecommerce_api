@@ -7,6 +7,7 @@ const customerSchema = new Schema(
             required: true,
             trim: true,
         },
+
         lastName: {
             type: String,
             required: true,
@@ -26,6 +27,12 @@ const customerSchema = new Schema(
         address: {
             type: String,
             required: true,
+        },
+        user: {
+            type: Schema.Types.ObjectId,
+            ref: "User",
+            required: true,
+            unique: true
         },
     },
     { timestamps: true }

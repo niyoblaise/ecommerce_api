@@ -1,6 +1,7 @@
 import express from "express";
 import CategoryController from "../Controller/CategoryController.js";
 import {authenticate} from "../middleware/authMiddleware.js";
+import {authorize} from "../middleware/roleMiddleware.js";
 
 
 const router = express.Router();
@@ -42,7 +43,7 @@ router.use(authenticate);
  *       401:
  *         description: Unauthorized
  */
-router.post("/", CategoryController.createCategory);
+router.post("/",authorize("Admin"), CategoryController.createCategory);
 
 /**
  * @swagger
@@ -54,7 +55,7 @@ router.post("/", CategoryController.createCategory);
  *       200:
  *         description: Categories retrieved
  */
-router.get("/", CategoryController.getAllCategories);
+router.get("/",authorize("Customer", "Seller", "Admin"), CategoryController.getAllCategories);
 
 /**
  * @swagger
@@ -116,10 +117,10 @@ router.get("/", CategoryController.getAllCategories);
  *         description: Category not found
  */
 
-router.get("/:id", CategoryController.getCategory);
+router.get("/:id",authorize("Customer", "Seller", "Admin"), CategoryController.getCategory);
 
-router.put("/:id", CategoryController.updateCategory);
+router.put("/:id",authorize("Admin"), CategoryController.updateCategory);
 
-router.delete("/:id", CategoryController.deleteCategory);
+router.delete("/:id",authorize("Admin"), CategoryController.deleteCategory);
 
 export default router;

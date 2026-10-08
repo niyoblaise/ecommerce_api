@@ -1,27 +1,29 @@
 import express from "express";
 import OrderController from "../Controller/OrderController.js";
 import {authenticate} from "../middleware/authMiddleware.js";
+import {authorize} from "../middleware/roleMiddleware.js";
 
 
 const router = express.Router();
 
 router.use(authenticate)
+router.get("/Customers/my-orders",authorize("Customer"),OrderController.getMyOrders)
 /**
  * @swagger
  * tags:
  *   name: Orders
- *   description: Create and manage customer orders
+ *   description: Create and manage Customer orders
  */
 
 /**
  * @swagger
- * /api/orders/customer/{customerId}:
+ * /api/orders/Customer/{CustomerId}:
  *   post:
- *     summary: Create an order from a customer's cart
+ *     summary: Create an order from a Customer's cart
  *     tags: [Orders]
  *     parameters:
  *       - in: path
- *         name: customerId
+ *         name: CustomerId
  *         required: true
  *         schema:
  *           type: string
@@ -44,11 +46,11 @@ router.use(authenticate)
  *       404:
  *         description: Customer or product not found
  *   get:
- *     summary: Get a customer's orders
+ *     summary: Get a Customer's orders
  *     tags: [Orders]
  *     parameters:
  *       - in: path
- *         name: customerId
+ *         name: CustomerId
  *         required: true
  *         schema:
  *           type: string
@@ -56,8 +58,8 @@ router.use(authenticate)
  *       200:
  *         description: Customer orders retrieved
  */
-router.post("/customer/:customerId", OrderController.createOrder);
-router.get("/customer/:customerId", OrderController.getCustomerOrders);
+router.post("/Customer/:customerId",authorize("Customer","Admin"), OrderController.createOrder);
+router.get("/Customer/:customerId",authorize("Customer", "Admin"), OrderController.getCustomerOrders);
 
 /**
  * @swagger
@@ -69,7 +71,7 @@ router.get("/customer/:customerId", OrderController.getCustomerOrders);
  *       200:
  *         description: Orders retrieved
  */
-router.get("/", OrderController.getAllOrders);
+router.get("/",authorize("Admin"), OrderController.getAllOrders);
 
 /**
  * @swagger
@@ -89,7 +91,7 @@ router.get("/", OrderController.getAllOrders);
  *       404:
  *         description: Order not found
  */
-router.get("/:id", OrderController.getOrder);
+router.get("/:id",authorize("Customer", "Admin"), OrderController.getOrder);
 
 /**
  * @swagger
@@ -123,7 +125,7 @@ router.get("/:id", OrderController.getOrder);
  *       404:
  *         description: Order not found
  */
-router.patch("/:id/status", OrderController.updateOrderStatus);
+router.patch("/:id/status",authorize("Admin"), OrderController.updateOrderStatus);
 
 /**
  * @swagger
@@ -145,6 +147,8 @@ router.patch("/:id/status", OrderController.updateOrderStatus);
  *       404:
  *         description: Order not found
  */
-router.patch("/:id/cancel", OrderController.cancelOrder);
+router.patch("/:id/cancel",authorize("Customer"), OrderController.cancelOrder);
 
-export default router;
+
+
+export default router

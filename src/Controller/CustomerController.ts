@@ -14,6 +14,7 @@ class CustomerController {
                 email,
                 phone,
                 address,
+                user,
             } = request.body;
 
             const customer = new CustomerModel({
@@ -22,6 +23,7 @@ class CustomerController {
                 email,
                 phone,
                 address,
+                user,
             });
 
             await customer.save();
@@ -101,6 +103,7 @@ class CustomerController {
                 email,
                 phone,
                 address,
+                user
             } = request.body;
 
             const customer = await CustomerModel.findById(id);
@@ -116,6 +119,7 @@ class CustomerController {
             customer.email = email;
             customer.phone = phone;
             customer.address = address;
+            customer.user = user
 
             await customer.save();
 

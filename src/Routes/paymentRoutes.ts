@@ -1,6 +1,7 @@
 import express from "express";
 import PaymentController from "../Controller/PaymentController.js";
 import {authenticate} from "../middleware/authMiddleware.js";
+import {authorize} from "../middleware/roleMiddleware.js";
 
 
 const router = express.Router();
@@ -59,8 +60,8 @@ router.use(authenticate)
  *       404:
  *         description: Payment not found
  */
-router.post("/order/:orderId", PaymentController.createPayment);
-router.get("/order/:orderId", PaymentController.getOrderPayment);
+router.post("/order/:orderId",authorize("Customer","Admin"), PaymentController.createPayment);
+router.get("/order/:orderId",authorize("Customer", "Admin"), PaymentController.getOrderPayment);
 
 /**
  * @swagger
@@ -72,7 +73,7 @@ router.get("/order/:orderId", PaymentController.getOrderPayment);
  *       200:
  *         description: Payments retrieved
  */
-router.get("/", PaymentController.getAllPayments);
+router.get("/",authorize("Admin"), PaymentController.getAllPayments);
 
 /**
  * @swagger
@@ -92,13 +93,13 @@ router.get("/", PaymentController.getAllPayments);
  *       404:
  *         description: Payment not found
  */
-router.get("/:id", PaymentController.getPayment);
+router.get("/:id",authorize("Customer", "Admin"), PaymentController.getPayment);
 
 /**
  * @swagger
- * /api/payments/customer/{id}:
+ * /api/payments/Customer/{id}:
  *   get:
- *     summary: Get a payment by customer id
+ *     summary: Get a payment by Customer id
  *     tags: [Payments]
  *     parameters:
  *       - in: path
@@ -112,6 +113,8 @@ router.get("/:id", PaymentController.getPayment);
  *       404:
  *         description: Payment not found
  */
-router.get("/customer/:id",PaymentController.getCustomerPayments)
+router.get("/Customer/:id",authorize("Customer", "Admin"),PaymentController.getCustomerPayments)
+
+router.get("/Customer/my-payments",authorize("Customer"),PaymentController.getMyPayments)
 
 export default router;

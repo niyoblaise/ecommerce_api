@@ -262,6 +262,25 @@ class OrderController {
             });
         }
     };
+
+    getMyOrders = async (req:express.Request,res:express.Response) =>{
+        try{
+            const loggedInUser = (req as any).user.userId
+            if(!loggedInUser){
+                return res.status(401).json({message: "User not found"});
+            }
+            const customerUser = await CustomerModel.findOne({user:loggedInUser})
+            if(!customerUser){
+                return res.status(401).json({message: "Customer not found"});
+            }
+            const order = await OrderModel.find({customer:customerUser._id})
+
+            return res.status(200).json({message:"orders found",data:order})
+        }catch(e){
+            return res.status(500).json({message:"Failed to get order status",error:e});
+        }
+
+    }
 }
 
 export default new OrderController();

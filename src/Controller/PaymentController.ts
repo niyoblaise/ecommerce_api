@@ -1,6 +1,7 @@
 import express from "express";
 import {OrderModel} from "../Model/Order.js";
 import {PaymentModel} from "../Model/Payment.js";
+import {CustomerModel} from "../Model/Customer.js";
 
 class PaymentController {
 
@@ -80,7 +81,12 @@ class PaymentController {
         response: express.Response
     ) => {
         try {
-            const payments = await PaymentModel.find()
+
+            const page = Number(request.query.page) || 1;
+            const limit = Number(request.query.limit) || 10;
+
+            const skip = (page - 1) * limit;
+            const payments = await PaymentModel.find().skip(skip).limit(limit)
                 .populate("order")
                 .populate("customer");
 
@@ -96,6 +102,27 @@ class PaymentController {
     };
 
 
+    getMyPayments = async  (request: express.Request, response: express.Response) => {
+        try{
+            const userId = (request as any).user.userId
+            if(!userId){
+                return response.status(404).json({message: "User not found"});
+            }
+            const customerId = await CustomerModel.findOne({user: userId});
+            if(!customerId){
+                return response.status(404).json({message: "Customer not found"});
+            }
+            const payments = await PaymentModel.find({customer:customerId._id})
+            if(payments.length === 0){
+                return response.status(404).json({message: "No payments found"});
+            }
+
+            return response.status(200).json({message: "Payment record found",data:payments});
+
+        }catch(e){
+            return response.status(500).json({message: `Failed to get payments ${e}` })
+        }
+    }
 
     getPayment = async (
         request: express.Request,
@@ -156,9 +183,74 @@ class PaymentController {
         }
     };
 
+    // getCustomerPayments = async (
+    //     req: express.Request,
+    //     res: express.Response
+    // ) => {
+    //     try {
+    //         const customerId = req.params.id;
+    //         const user = (req as any).user;
+    //
+    //         // Check that user is logged in
+    //         if (!user) {
+    //             return res.status(401).json({
+    //                 message: "You are not authenticated"
+    //             });
+    //         }
+    //
+    //         // ADMIN can view any customer's payments
+    //         if (user.role === "ADMIN") {
+    //
+    //             const payments = await PaymentModel.find({
+    //                 customer: customerId
+    //             });
+    //
+    //             return res.status(200).json({
+    //                 message: "Customer payments found",
+    //                 data: payments
+    //             });
+    //         }
+    //
+    //         // CUSTOMER: find the Customer document belonging to logged-in user
+    //         const customer = await CustomerModel.findOne({
+    //             user: user.userId
+    //         });
+    //
+    //         if (!customer) {
+    //             return res.status(404).json({
+    //                 message: "Customer not found"
+    //             });
+    //         }
+    //
+    //         // CUSTOMER can only access their own payments
+    //         if (customer._id.toString() !== customerId) {
+    //             return res.status(403).json({
+    //                 message: "You are not allowed to view these payments"
+    //             });
+    //         }
+    //
+    //         // Now get this customer's payments
+    //         const payments = await PaymentModel.find({
+    //             customer: customer._id
+    //         });
+    //
+    //         return res.status(200).json({
+    //             message: "Customer payments found",
+    //             data: payments
+    //         });
+    //
+    //     } catch (error) {
+    //         return res.status(500).json({
+    //             message: "Failed to get customer payments",
+    //             error: error
+    //         });
+    //     }
+    // };
+
     getCustomerPayments = async (req:express.Request, res:express.Response) => {
         try{
             const {id} = req.params;
+
             const customerPayments = await PaymentModel.find({customer:id})
             res.status(200).json({message:"Customer payments", customerPayments})
         }catch(error){

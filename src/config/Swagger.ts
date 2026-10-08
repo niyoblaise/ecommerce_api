@@ -12,7 +12,7 @@ const options = {
         },
         servers: [
             {
-                url: `http://localhost:${port}`,
+                url: `https://ecommerce-api-bszs.onrender.com`,
                 description: "Local development server",
             },
         ],

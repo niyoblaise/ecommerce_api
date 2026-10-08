@@ -1,12 +1,12 @@
 import express from "express";
 import {authenticate} from "../middleware/authMiddleware.js";
 import CartController from "../Controller/CartController.js";
+import {authorize} from "../middleware/roleMiddleware.js";
 
 const router = express.Router();
 
 router.use(authenticate)
 
-router.post("/", CartController.createCart);
 
 
 /**
@@ -22,16 +22,16 @@ router.post("/", CartController.createCart);
  *   post:
  *     summary: Create a cart
  *     tags: [Carts]
- *     description: Creates a cart for a customer.
+ *     description: Creates a cart for a Customer.
  *     requestBody:
  *       required: true
  *       content:
  *         application/json:
  *           schema:
  *             type: object
- *             required: [customerId]
+ *             required: [CustomerId]
  *             properties:
- *               customerId:
+ *               CustomerId:
  *                 type: string
  *                 example: 6abe16cb3d694a0f73130dc6
  *     responses:
@@ -42,17 +42,17 @@ router.post("/", CartController.createCart);
  *       401:
  *         description: Unauthorized
  */
-router.post("/", CartController.createCart);
+router.post("/",authorize("Customer"), CartController.createCart);
 
 /**
  * @swagger
- * /api/carts/{customerId}/total:
+ * /api/carts/{CustomerId}/total:
  *   get:
  *     summary: Calculate cart total
  *     tags: [Carts]
  *     parameters:
  *       - in: path
- *         name: customerId
+ *         name: CustomerId
  *         required: true
  *         schema:
  *           type: string
@@ -62,17 +62,17 @@ router.post("/", CartController.createCart);
  *       404:
  *         description: Cart not found
  */
-router.get("/:customerId/total", CartController.getCartTotal);
+router.get("/:CustomerId/total",authorize("Customer","Admin"), CartController.getCartTotal);
 
 /**
  * @swagger
- * /api/carts/{customerId}:
+ * /api/carts/{CustomerId}:
  *   get:
- *     summary: Get a customer's cart
+ *     summary: Get a Customer's cart
  *     tags: [Carts]
  *     parameters:
  *       - in: path
- *         name: customerId
+ *         name: CustomerId
  *         required: true
  *         schema:
  *           type: string
@@ -82,17 +82,17 @@ router.get("/:customerId/total", CartController.getCartTotal);
  *       404:
  *         description: Cart not found
  */
-router.get("/:customerId", CartController.getCart);
+router.get("/:CustomerId",authorize("Customer"), CartController.getCart);
 
 /**
  * @swagger
- * /api/carts/{customerId}/items:
+ * /api/carts/{CustomerId}/items:
  *   post:
  *     summary: Add a product to the cart
  *     tags: [Carts]
  *     parameters:
  *       - in: path
- *         name: customerId
+ *         name: CustomerId
  *         required: true
  *         schema:
  *           type: string
@@ -119,17 +119,17 @@ router.get("/:customerId", CartController.getCart);
  *       404:
  *         description: Customer or product not found
  */
-router.post("/:customerId/items", CartController.addToCart);
+router.post("/:customerId/items",authorize("Customer"), CartController.addToCart);
 
 /**
  * @swagger
- * /api/carts/{customerId}/items/{productId}:
+ * /api/carts/{CustomerId}/items/{productId}:
  *   put:
  *     summary: Update a cart item's quantity
  *     tags: [Carts]
  *     parameters:
  *       - in: path
- *         name: customerId
+ *         name: CustomerId
  *         required: true
  *         schema:
  *           type: string
@@ -158,17 +158,17 @@ router.post("/:customerId/items", CartController.addToCart);
  *       404:
  *         description: Cart or product not found
  */
-router.put("/:customerId/items/:productId", CartController.updateCartItem);
+router.put("/:customerId/items/:productId",authorize("Customer"), CartController.updateCartItem);
 
 /**
  * @swagger
- * /api/carts/{customerId}/items/{productId}:
+ * /api/carts/{CustomerId}/items/{productId}:
  *   delete:
  *     summary: Remove a product from the cart
  *     tags: [Carts]
  *     parameters:
  *       - in: path
- *         name: customerId
+ *         name: CustomerId
  *         required: true
  *         schema:
  *           type: string
@@ -183,17 +183,17 @@ router.put("/:customerId/items/:productId", CartController.updateCartItem);
  *       404:
  *         description: Cart or item not found
  */
-router.delete("/:customerId/items/:productId", CartController.removeCartItem);
+router.delete("/:CustomerId/items/:productId", authorize("Customer"), CartController.removeCartItem);
 
 /**
  * @swagger
- * /api/carts/{customerId}:
+ * /api/carts/{CustomerId}:
  *   delete:
- *     summary: Clear a customer's cart
+ *     summary: Clear a Customer's cart
  *     tags: [Carts]
  *     parameters:
  *       - in: path
- *         name: customerId
+ *         name: CustomerId
  *         required: true
  *         schema:
  *           type: string
@@ -203,6 +203,6 @@ router.delete("/:customerId/items/:productId", CartController.removeCartItem);
  *       404:
  *         description: Cart not found
  */
-router.delete("/:customerId", CartController.clearCart);
+router.delete("/:CustomerId",authorize("Customer"), CartController.clearCart);
 
 export default router;

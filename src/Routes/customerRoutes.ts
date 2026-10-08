@@ -1,6 +1,7 @@
 import express from "express";
 import CustomerController from "../Controller/CustomerController.js";
 import {authenticate} from "../middleware/authMiddleware.js";
+import {authorize} from "../middleware/roleMiddleware.js";
 
 
 const router = express.Router();
@@ -10,14 +11,14 @@ router.use(authenticate)
  * @swagger
  * tags:
  *   name: Customers
- *   description: Manage customer records
+ *   description: Manage Customer records
  */
 
 /**
  * @swagger
- * /api/customers:
+ * /api/Customers:
  *   post:
- *     summary: Create a customer
+ *     summary: Create a Customer
  *     tags: [Customers]
  *     requestBody:
  *       required: true
@@ -47,22 +48,22 @@ router.use(authenticate)
  *       201:
  *         description: Customer created
  *       400:
- *         description: Invalid customer data
+ *         description: Invalid Customer data
  *   get:
- *     summary: Get all customers
+ *     summary: Get all Customers
  *     tags: [Customers]
  *     responses:
  *       200:
  *         description: Customers retrieved
  */
-router.post("/", CustomerController.createCustomer);
-router.get("/", CustomerController.getAllCustomers);
+router.post("/",authorize("Customer", "Admin"), CustomerController.createCustomer);
+router.get("/",authorize("Admin"), CustomerController.getAllCustomers);
 
 /**
  * @swagger
- * /api/customers/{id}:
+ * /api/Customers/{id}:
  *   get:
- *     summary: Get a customer by ID
+ *     summary: Get a Customer by ID
  *     tags: [Customers]
  *     parameters:
  *       - in: path
@@ -76,7 +77,7 @@ router.get("/", CustomerController.getAllCustomers);
  *       404:
  *         description: Customer not found
  *   put:
- *     summary: Update a customer
+ *     summary: Update a Customer
  *     tags: [Customers]
  *     parameters:
  *       - in: path
@@ -112,7 +113,7 @@ router.get("/", CustomerController.getAllCustomers);
  *       404:
  *         description: Customer not found
  *   delete:
- *     summary: Delete a customer
+ *     summary: Delete a Customer
  *     tags: [Customers]
  *     parameters:
  *       - in: path
@@ -126,8 +127,8 @@ router.get("/", CustomerController.getAllCustomers);
  *       404:
  *         description: Customer not found
  */
-router.get("/:id", CustomerController.getCustomer);
-router.put("/:id", CustomerController.updateCustomer);
-router.delete("/:id", CustomerController.deleteCustomer);
+router.get("/:id",authorize("Customer", "Admin"), CustomerController.getCustomer);
+router.put("/:id",authorize("Customer", "Admin"), CustomerController.updateCustomer);
+router.delete("/:id",authorize("Admin"), CustomerController.deleteCustomer);
 
 export default router;

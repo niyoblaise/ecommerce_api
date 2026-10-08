@@ -3,7 +3,7 @@ export interface IUser extends Document{
     name: string,
     email: string,
     password: string,
-    role:"Customer" | "Seller" | "Admin",
+    role:"Customer" | "" | "Admin",Seller
     resetCode?: string;
     resetCodeExpires?: Date;
 }

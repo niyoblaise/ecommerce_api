@@ -1,6 +1,7 @@
 import express from "express";
 import ProductController from "../Controller/ProductController.js";
 import {authenticate} from "../middleware/authMiddleware.js";
+import {authorize} from "../middleware/roleMiddleware.js";
 
 const router = express.Router();
 
@@ -59,8 +60,8 @@ router.use(authenticate)
  *       200:
  *         description: Products retrieved
  */
-router.post("/", ProductController.createProduct);
-router.get("/", ProductController.getAllProducts);
+router.post("/",authorize("Seller","Admin"), ProductController.createProduct);
+router.get("/",authorize("Customer", "Seller", "Admin"),ProductController.getAllProducts);
 
 /**
  * @swagger
@@ -81,7 +82,8 @@ router.get("/", ProductController.getAllProducts);
  *       400:
  *         description: Search name is required
  */
-router.get("/search", ProductController.searchProducts);
+
+router.get("/search",authorize("Customer", "Seller", "Admin"), ProductController.searchProducts);
 
 /**
  * @swagger
@@ -99,7 +101,7 @@ router.get("/search", ProductController.searchProducts);
  *       200:
  *         description: Products in the category retrieved
  */
-router.get("/category/:categoryId", ProductController.getProductsByCategory);
+router.get("/category/:categoryId",authorize("Customer", "Seller", "Admin"), ProductController.getProductsByCategory);
 
 /**
  * @swagger
@@ -175,9 +177,9 @@ router.get("/category/:categoryId", ProductController.getProductsByCategory);
  *       404:
  *         description: Product not found
  */
-router.get("/:id", ProductController.getProduct);
-router.put("/:id", ProductController.updateProduct);
-router.delete("/:id", ProductController.deleteProduct);
+router.get("/:id", authorize("Customer", "Seller", "Admin"), ProductController.getProduct);
+router.put("/:id",authorize("Seller", "Admin"), ProductController.updateProduct);
+router.delete("/:id",authorize("Seller","Admin"), ProductController.deleteProduct);
 
 /**
  * @swagger
@@ -209,7 +211,7 @@ router.delete("/:id", ProductController.deleteProduct);
  *       404:
  *         description: Product not found
  */
-router.patch("/:id/stock", ProductController.updateStock);
+router.patch("/:id/stock",authorize("Seller","Admin"), ProductController.updateStock);
 
 /**
  * @swagger
@@ -243,6 +245,6 @@ router.patch("/:id/stock", ProductController.updateStock);
  *       404:
  *         description: Product not found
  */
-router.patch("/:id/reduce-stock", ProductController.reduceStock);
+router.patch("/:id/reduce-stock",authorize("Seller", "Admin"), ProductController.reduceStock);
 
 export default router;
