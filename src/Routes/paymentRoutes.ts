@@ -61,6 +61,7 @@ router.use(authenticate)
  *         description: Payment not found
  */
 router.post("/order/:orderId",authorize("Customer","Admin"), PaymentController.createPayment);
+router.get("/Customer/my-payments",authorize("Customer"),PaymentController.getMyPayments)
 router.get("/order/:orderId",authorize("Customer", "Admin"), PaymentController.getOrderPayment);
 
 /**
@@ -115,6 +116,6 @@ router.get("/:id",authorize("Customer", "Admin"), PaymentController.getPayment);
  */
 router.get("/Customer/:id",authorize("Customer", "Admin"),PaymentController.getCustomerPayments)
 
-router.get("/Customer/my-payments",authorize("Customer"),PaymentController.getMyPayments)
+
 
 export default router;

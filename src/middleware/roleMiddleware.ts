@@ -1,7 +1,7 @@
 import express from "express";
 
 
-export const authorize = (...roles:[string]) =>{
+export const authorize = (...roles:string[]) =>{
     return(req:express.Request, res:express.Response, next:express.NextFunction) => {
         if(!(req as any).user){
             return res.status(401).json({error:"You are not authenticated"});

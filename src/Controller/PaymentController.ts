@@ -120,7 +120,9 @@ class PaymentController {
             return response.status(200).json({message: "Payment record found",data:payments});
 
         }catch(e){
-            return response.status(500).json({message: `Failed to get payments ${e}` })
+            console.log(e);
+
+            return response.status(500).json({message: `Failed to get payments`,error: e })
         }
     }
 
