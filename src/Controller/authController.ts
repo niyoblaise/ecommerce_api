@@ -188,10 +188,19 @@ export const resetPassword = async (
 export const sendWelcomeBrevo = async (email:string) =>{
     await sendBrevoMail(email,"Welcome to our API",
         `
-            <h2>Welcome</h2>
-
-            <p>You are most welcome to our API ${email}</p>
-        `)
+      <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 480px; margin: 0 auto; padding: 32px 24px; color: #1f2937;">
+        <h2 style="margin: 0 0 12px; font-size: 20px; font-weight: 600; color: #111827;">Welcome aboard</h2>
+        <p style="margin: 0 0 20px; font-size: 14px; line-height: 1.5; color: #4b5563;">
+          Thanks for signing up  <strong style="color: #111827;">${email}</strong> . Your account is active and ready for your first request.
+        </p>
+        <a href="https://ecommerce-api-bszs.onrender.com/api-docs" style="display: inline-block; background-color: #111827; color: #ffffff; padding: 8px 16px; border-radius: 6px; font-size: 13px; font-weight: 500; text-decoration: none;">
+          View API Docs &rarr;
+        </a>
+        <p style="margin-top: 24px; font-size: 12px; color: #9ca3af;">
+          Questions? Simply reply to this email.
+        </p>
+      </div>
+    `)
 }
 
 export const sendResetCode = async (
