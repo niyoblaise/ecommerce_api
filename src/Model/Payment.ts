@@ -1,5 +1,6 @@
 import mongoose, { Schema } from "mongoose";
 
+
 const paymentSchema = new Schema(
     {
         order: {
@@ -44,7 +45,7 @@ const paymentSchema = new Schema(
 
         transactionId: {
             type: String,
-            default: null,
+            default: crypto.randomUUID(),
         },
     },
     { timestamps: true }
