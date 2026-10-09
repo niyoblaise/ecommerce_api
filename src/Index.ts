@@ -9,10 +9,12 @@ import orderRoutes from "./Routes/orderRoutes.js";
 import paymentRoutes from "./Routes/paymentRoutes.js";
 import swaggerUi from "swagger-ui-express";
 import swaggerSpec from "./config/Swagger.js";
+import cors from "cors"
 
 const app = express();
 
 app.use(express.json());
+app.use(cors())
 
 app.use("/api/auth", authRouter);
 app.use("/api/products", productRoutes);
