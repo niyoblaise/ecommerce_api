@@ -2,6 +2,8 @@ import express from "express";
 import {OrderModel} from "../Model/Order.js";
 import {PaymentModel} from "../Model/Payment.js";
 import {CustomerModel} from "../Model/Customer.js";
+import {sendBrevoMail} from "./brevoMailController.js";
+import {sendPaymentConfirmation} from "../utils/emailTemplates.js";
 
 class PaymentController {
 
@@ -61,6 +63,7 @@ class PaymentController {
             });
 
             await payment.save();
+
 
             return response.status(201).json({
                 message: "Payment record created successfully",
