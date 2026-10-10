@@ -2,7 +2,6 @@ import express from "express";
 import {OrderModel} from "../Model/Order.js";
 import {PaymentModel} from "../Model/Payment.js";
 import {CustomerModel} from "../Model/Customer.js";
-import {sendBrevoMail} from "./brevoMailController.js";
 import {sendPaymentConfirmation} from "../utils/emailTemplates.js";
 
 class PaymentController {
@@ -63,6 +62,15 @@ class PaymentController {
             });
 
             await payment.save();
+            const customer = await CustomerModel.findById(payment.customer)
+            if(customer){
+                try{
+                    await sendPaymentConfirmation(customer.email,String(order._id), `${customer.firstName} ${customer.lastName}`,payment.amount)
+
+                }catch(e){
+                    console.log(e)
+                }
+            }
 
 
             return response.status(201).json({
