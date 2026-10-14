@@ -56,6 +56,7 @@ class ProductController {
         try {
             const products = await ProductModel.find().populate("category");
 
+
             return response.status(200).json({
                 data: products,
             });
