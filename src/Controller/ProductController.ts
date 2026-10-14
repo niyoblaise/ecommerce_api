@@ -77,7 +77,7 @@ class ProductController {
         try {
             const { id } = request.params;
 
-            const product = await ProductModel.findById(id);
+            const product = await ProductModel.findById(id).populate("category");
 
             if (!product) {
                 return response.status(404).json({
