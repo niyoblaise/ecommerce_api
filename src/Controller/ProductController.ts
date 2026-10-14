@@ -54,7 +54,7 @@ class ProductController {
         response: express.Response
     ) => {
         try {
-            const products = await ProductModel.find();
+            const products = await ProductModel.find().populate("category");
 
             return response.status(200).json({
                 data: products,
