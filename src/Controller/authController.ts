@@ -9,26 +9,33 @@ import {generateOTP} from "../utils/otp.js";
 
 export const registerUser = async (req: Request, res: Response) => {
     try{
-        const {name, email, password} = req.body;
+ro        const {name, email, password, role} = req.body;
+
         if(!name || !email || !password || !password.length){
-            return res.status(400).json({error: 'names email and password are required'});
+            return res.status(400).json({error: 'Name, email and password are required'});
         }
+
+        // Only allow Customer or Seller — Admin cannot be self-registered
+        const allowedRoles = ["Customer", "Seller"];
+        const userRole = role && allowedRoles.includes(role) ? role : "Customer";
 
         const existingUser = await userModel.findOne({email})
         if(existingUser){
-            return res.status(400).json({error: 'email already exists'});
+            return res.status(400).json({error: 'Email already exists'});
         }
 
-        const hashedPassword = await bcrypt.hash(password,10);
+        const hashedPassword = await bcrypt.hash(password, 10);
         await userModel.create({
-            name,email,
-            password:hashedPassword
-        })
+            name,
+            email,
+            password: hashedPassword,
+            role: userRole
+        });
 
-
-        return res.status(201).json({message: "User created",user:{
-            name,email
-            }});
+        return res.status(201).json({
+            message: "User created",
+            user: { name, email, role: userRole }
+        });
 
     }catch (e){
         return res.status(500).json({error: `server error ${e}`});
