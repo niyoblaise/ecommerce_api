@@ -60,9 +60,8 @@ const router = express.Router();
  *       200:
  *         description: Products retrieved
  */
-router.post("/",authorize("Seller","Admin"), ProductController.createProduct);
-// router.get("/",authorize("Customer", "Seller", "Admin"),ProductController.getAllProducts);
- router.get("/",authorize("Customer", "Seller", "Admin"),ProductController.getAllProducts);
+router.post("/", authenticate, authorize("Seller", "Admin"), ProductController.createProduct);
+router.get("/", ProductController.getAllProducts);
 
 /**
  * @swagger
@@ -84,7 +83,7 @@ router.post("/",authorize("Seller","Admin"), ProductController.createProduct);
  *         description: Search name is required
  */
 
-router.get("/search",authorize("Customer", "Seller", "Admin"), ProductController.searchProducts);
+router.get("/search", ProductController.searchProducts);
 
 /**
  * @swagger
@@ -178,9 +177,9 @@ router.get("/category/:categoryId",authorize("Customer", "Seller", "Admin"), Pro
  *       404:
  *         description: Product not found
  */
-router.get("/:id", authorize("Customer", "Seller", "Admin"), ProductController.getProduct);
-router.put("/:id",authorize("Seller", "Admin"), ProductController.updateProduct);
-router.delete("/:id",authorize("Seller","Admin"), ProductController.deleteProduct);
+router.get("/:id", ProductController.getProduct);
+router.put("/:id", authenticate, authorize("Seller", "Admin"), ProductController.updateProduct);
+router.delete("/:id", authenticate, authorize("Seller", "Admin"), ProductController.deleteProduct);
 
 /**
  * @swagger
@@ -212,7 +211,7 @@ router.delete("/:id",authorize("Seller","Admin"), ProductController.deleteProduc
  *       404:
  *         description: Product not found
  */
-router.patch("/:id/stock",authorize("Seller","Admin"), ProductController.updateStock);
+router.patch("/:id/stock", authenticate, authorize("Seller", "Admin"), ProductController.updateStock);
 
 /**
  * @swagger
@@ -246,6 +245,6 @@ router.patch("/:id/stock",authorize("Seller","Admin"), ProductController.updateS
  *       404:
  *         description: Product not found
  */
-router.patch("/:id/reduce-stock",authorize("Seller", "Admin"), ProductController.reduceStock);
+router.patch("/:id/reduce-stock", authenticate, authorize("Customer", "Seller", "Admin"), ProductController.reduceStock);
 
 export default router;
