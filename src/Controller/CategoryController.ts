@@ -114,6 +114,7 @@ class CategoryController {
     };
 
 
+
     deleteCategory = async (
         request: express.Request,
         response: express.Response
