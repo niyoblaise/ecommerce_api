@@ -14,6 +14,7 @@ export const authenticate = (req: Request, res: Response, next: NextFunction) =>
             return res.status(401).json({error: 'Invalid Auth'})
         }
 
+
         const decoded = jwt.verify(token, process.env.JWT_SECRET as string);
         (req as any).user = decoded;
         next()
